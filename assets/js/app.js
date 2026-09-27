@@ -88,7 +88,56 @@ function renderLayers(){const root=$("#architectureLayers");DATA.layers.forEach(
 function renderDataKpis(){const root=$("#dataKpis");DATA.dataKpis.forEach(k=>root.appendChild(el("article","ops-card",'<div class="op-head"><h4>'+k.name+'</h4><span class="tag proposed">ĐX</span></div><strong>'+k.target+'</strong><p>'+k.desc+'</p>')))}
 function renderIoc(){const root=$("#iocGrid");DATA.ioc.forEach(k=>root.appendChild(el("article","ioc-card",'<div class="label">'+k.label+'</div><strong>'+k.value+'</strong><div class="target">'+k.target+'</div><div class="status"><i></i></div>')))}
 function renderKpis(filter="all"){const root=$("#kpiBody");root.innerHTML="";DATA.kpis.filter(k=>filter==="all"||k.type===filter).forEach(k=>{const tag=k.type==="QH"?"official":"proposed";root.appendChild(el("tr","",'<td><span class="tag '+tag+'">'+k.type+'</span> '+k.id+'</td><td>'+k.name+'</td><td>'+k.formula+'</td><td>'+k.unit+'</td><td><b>'+k.target+'</b></td><td>'+k.freq+'</td><td>'+k.source+'</td><td>'+k.result+'</td>'))})}
-renderPlanning();renderPillars();renderSectors();renderProblems();renderMatrix();renderLayers();renderDataKpis();renderIoc();renderKpis();
+
+function formatVi(n){return new Intl.NumberFormat("vi-VN",{maximumFractionDigits:2}).format(n)}
+function barChartHTML(rows,max=100,extraClass=""){
+  return '<div class="hbar-chart '+extraClass+'">'+rows.map(function(r){
+    const width=Math.max(0,Math.min(100,(r.value/max)*100));
+    return '<div class="hbar-row"><div class="hbar-label">'+r.label+'</div><div class="hbar-track" title="'+r.label+': '+formatVi(r.value)+(r.suffix||"")+'"><div class="hbar-fill" style="--w:'+width+'%"></div></div><div class="hbar-value">'+formatVi(r.value)+(r.suffix||"")+'</div></div>';
+  }).join("")+(extraClass?"":'<div class="hbar-scale"><span></span><div><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div><span></span></div>')+'</div>';
+}
+function renderCharts(){
+  const targets=[
+    {label:"Kinh tế số / GRDP",value:10.08,suffix:"%"},
+    {label:"Tăng thu ngân sách",value:7,suffix:"%"},
+    {label:"Nước sạch đô thị",value:99.7,suffix:"%"},
+    {label:"Xã đạt chuẩn nông thôn mới",value:100,suffix:"%"},
+    {label:"Chất thải nguy hại được xử lý",value:99.88,suffix:"%"},
+    {label:"Chất thải y tế được xử lý",value:100,suffix:"%"},
+    {label:"Rác sinh hoạt đô thị đạt chuẩn",value:99,suffix:"%"},
+    {label:"KCN/CCN có xử lý nước thải",value:100,suffix:"%"}
+  ];
+  const targetRoot=$("#chartTargets");
+  if(targetRoot) targetRoot.innerHTML=barChartHTML(targets,100)+'<div class="chart-note">Nguồn: các mục tiêu QH đang sử dụng trong dashboard. Biểu đồ chỉ gồm chỉ tiêu có cùng đơn vị %.</div>';
+
+  const pillarRows=DATA.pillars.map(function(p){
+    return {code:p.code,label:p.name,value:DATA.problems.filter(function(bt){return bt.pillars.includes(p.code)}).length};
+  });
+  const pillarMax=Math.max.apply(null,pillarRows.map(function(x){return x.value}).concat([1]));
+  const pillarRoot=$("#chartPillars");
+  if(pillarRoot) pillarRoot.innerHTML='<div class="column-chart">'+pillarRows.map(function(p){
+    return '<div class="column-item" title="'+p.label+' · '+p.value+' liên kết"><div class="column-value">'+p.value+'</div><div class="column-bar-wrap"><div class="column-bar" style="--h:'+((p.value/pillarMax)*100)+'%"></div></div><div class="column-label">'+p.code+'</div><div class="column-sub">'+p.value+' / 9 bài toán</div></div>';
+  }).join("")+'</div><div class="chart-note">P1: dữ liệu không gian · P2: AI–IoT · P3: nông nghiệp tuần hoàn. Một BT có thể xuất hiện ở nhiều trụ cột.</div>';
+
+  const sectorRows=DATA.sectors.map(function(sec){
+    return {label:sec.id+" · "+sec.name,value:sec.bt.split("·").map(function(x){return x.trim()}).filter(Boolean).length,suffix:""};
+  });
+  const sectorMax=Math.max.apply(null,sectorRows.map(function(x){return x.value}).concat([1]));
+  const sectorRoot=$("#chartSectors");
+  if(sectorRoot) sectorRoot.innerHTML=barChartHTML(sectorRows,sectorMax,"sector-bars")+'<div class="chart-note">Đơn vị: số bài toán được liên kết trong khung hiện tại.</div>';
+}
+function normalizeUnicodeNFC(root=document.body){
+  if(!root||typeof "".normalize!=="function") return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let node;
+  while((node=walker.nextNode())) node.nodeValue=node.nodeValue.normalize("NFC");
+  document.title=document.title.normalize("NFC");
+  document.querySelectorAll("[aria-label],[title]").forEach(function(n){
+    ["aria-label","title"].forEach(function(a){const v=n.getAttribute(a);if(v)n.setAttribute(a,v.normalize("NFC"))});
+  });
+}
+
+renderPlanning();renderPillars();renderSectors();renderProblems();renderMatrix();renderLayers();renderDataKpis();renderIoc();renderKpis();renderCharts();normalizeUnicodeNFC();
 $("#pillarFilter").addEventListener("change",e=>renderProblems(e.target.value));$("#kpiFilter").addEventListener("change",e=>renderKpis(e.target.value));
 const menu=$(".menu-btn"),nav=$(".nav");menu.addEventListener("click",()=>{const open=nav.classList.toggle("open");menu.setAttribute("aria-expanded",String(open))});nav.addEventListener("click",()=>{nav.classList.remove("open");menu.setAttribute("aria-expanded","false")});
 const links=[...document.querySelectorAll(".nav a")],sections=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
