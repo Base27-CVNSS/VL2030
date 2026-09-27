@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#f6f1e7">
   <meta name="description" content="VL2030 Strategy & Planning Dashboard — khung tư vấn chiến lược kết nối quy hoạch, kiến trúc dữ liệu, IOC, lộ trình và KPI tỉnh Vĩnh Long.">
   <title>VL2030 · Strategy & Planning Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
@@ -16,7 +19,7 @@
       <div><strong>VL2030</strong><span>STRATEGY &amp; PLANNING DASHBOARD</span></div>
     </div>
     <nav class="nav" aria-label="Điều hướng chính">
-      <a href="#overview">Tổng quan</a><a href="#planning">Quy hoạch</a><a href="#pillars">3 Trụ cột</a>
+      <a href="#overview">Tổng quan</a><a href="#planning">Quy hoạch</a><a href="#charts">Biểu đồ</a><a href="#pillars">3 Trụ cột</a>
       <a href="#sectors">8 Lĩnh vực</a><a href="#problems">9 Bài toán</a><a href="#matrix">Ma trận</a>
       <a href="#architecture">Kiến trúc</a><a href="#data">Dữ liệu</a><a href="#ioc">IOC</a>
       <a href="#roadmap">Lộ trình</a><a href="#kpi">KPI</a>
@@ -92,6 +95,50 @@
             <li><b>Sinh thái Tiền – Hậu – ven biển</b><span>Vành đai xanh · nông nghiệp tuần hoàn</span></li>
           </ol>
         </div>
+      </div>
+    </section>
+
+    <section id="charts" class="section charts-section">
+      <div class="section-head split">
+        <div>
+          <div class="kicker">02A · BIỂU ĐỒ ĐIỀU HÀNH</div>
+          <h2>Nhìn số liệu theo cấu trúc — không chỉ theo con số</h2>
+          <p>Ba biểu đồ tóm tắt các mục tiêu phần trăm của Quy hoạch 2030, mức độ bao phủ của 9 bài toán theo 3 trụ cột và mật độ liên kết giữa 8 lĩnh vực với danh mục bài toán.</p>
+        </div>
+        <div class="source-box">
+          <span class="tag official">QH</span> <span class="tag framework">AF</span>
+          <b>Nguyên tắc trực quan hóa</b>
+          <p>Không trộn các đại lượng khác đơn vị. Chỉ so sánh các chỉ tiêu cùng thang đo hoặc đếm quan hệ trong chính khung VL2030.</p>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <article class="chart-card chart-wide">
+          <div class="chart-head">
+            <div><span class="chart-no">01</span><h3>Mục tiêu Quy hoạch 2030 theo thang %</h3></div>
+            <span class="tag official">QH</span>
+          </div>
+          <p class="chart-desc">Các chỉ tiêu có cùng đơn vị phần trăm; GRDP/người, năng suất lao động và HDI được giữ ngoài biểu đồ để tránh so sánh sai đơn vị.</p>
+          <div id="chartTargets" class="chart-host" role="img" aria-label="Biểu đồ các mục tiêu quy hoạch 2030 theo phần trăm"></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-head">
+            <div><span class="chart-no">02</span><h3>9 bài toán phủ lên 3 trụ cột</h3></div>
+            <span class="tag framework">AF</span>
+          </div>
+          <p class="chart-desc">Một bài toán có thể đồng thời thuộc nhiều trụ cột; đây là số liên kết, không phải tỷ trọng cộng bằng 100%.</p>
+          <div id="chartPillars" class="chart-host chart-host-columns" role="img" aria-label="Biểu đồ số bài toán liên kết với từng trụ cột"></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-head">
+            <div><span class="chart-no">03</span><h3>Mật độ liên kết 8 lĩnh vực ↔ 9 bài toán</h3></div>
+            <span class="tag framework">AF</span>
+          </div>
+          <p class="chart-desc">Đếm số bài toán hiện được gắn cho từng lĩnh vực trong khung; không diễn giải thành mức ưu tiên ngân sách.</p>
+          <div id="chartSectors" class="chart-host" role="img" aria-label="Biểu đồ số bài toán liên kết theo từng lĩnh vực"></div>
+        </article>
       </div>
     </section>
 
